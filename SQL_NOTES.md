@@ -171,3 +171,42 @@ Onwards!
 
 ### CRUD commands (Create, Read, Update, Delete)
 
+---
+
+### SELECT statements:
+
+- Give me all columns in a table: ```SELECT * FROM table_name```
+  - e.g. ```SELECT name FROM cats;```, ```SELECT cat_id FROM cats;```
+- If we need to select multiple columns: ```SELECT colA, colB FROM cats```
+  - e.g. ```SELECT cat_id, name, age FROM cats;```
+
+### WHERE statements: 
+
+- To find a specific row from all rows: 
+  - e.g. Select by age: ```SELECT * FROM cats WHERE age = 4;```
+  - e.g. Select by name: ```SELECT * FROM cats WHERE name = "Egg";```
+    - Normally, the SQL is case-insensitive, thus the statement above should be the same as the statement: ```SELECT * FROM cats WHERE name = "eGG";```
+
+### Aliases:
+
+- ```
+  SELECT cat_id AS id, name FROM cats;
+   
+  SELECT name AS 'cat name', breed AS 'kitty breed' FROM cats;
+   
+  DESC cats;
+  ```
+
+### Update Data:
+
+```UPDATE table_name SET the_thing_need_to_change WHERE selected_item```
+
+- e.g. ```UPDATE cats SET breed = 'Shorthair' WHERE breed = 'Tabby';```
+  - or: ```UPDATE cats SET age = 14 WHERE name = 'Misty';```
+
+### Delete:
+
+```DELETE FROM cats WHERE name = 'EGG'```
+
+If we choose to run ```DELETE FROM cats```, then all entries in ```cats``` will be deleted. But the ```cats``` table still there! 
+
