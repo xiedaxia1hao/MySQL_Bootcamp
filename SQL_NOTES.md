@@ -155,11 +155,12 @@ Onwards!
   	age INT,
   PRIMARY KEY(cat_id)
   );
+  ```
 ```
   
   Now it is easier for us to do insertion since we do not need to remember cat's id:
   
-  ```
+```
   INSERT INTO unique_cats2(name, age) VALUES('Skippy', 3);
   INSERT INTO unique_cats2(name, age) VALUES('Skippy', 3);
   INSERT INTO unique_cats2(name, age) VALUES('Boloson', 2);
@@ -169,9 +170,7 @@ Onwards!
 
 
 
-### CRUD commands (Create, Read, Update, Delete)
-
----
+## CRUD commands (Create, Read, Update, Delete)
 
 ### SELECT statements:
 
@@ -209,4 +208,93 @@ Onwards!
 ```DELETE FROM cats WHERE name = 'EGG'```
 
 If we choose to run ```DELETE FROM cats```, then all entries in ```cats``` will be deleted. But the ```cats``` table still there! 
+
+### SOURCE a .sql file
+
+```	SOURCE test.sql;```
+
+NOTE: the directory matters! 
+
+e.g. ```Source /dir1/dir2/dir3/test.sql;```
+
+
+
+## String Functions
+
+**The string functions only change the query output, and they don't affect the actual data in the database.** 
+
+### CONCAT
+
+Before we use `CONCAT`, we have to make sure it is in the `SELECT ... FROM ...` clause, since the sql needs to know which table we are working at. 
+
+- `CONCAT(a,b,c,d,e,f);`:
+
+  - e.g. `CONCAT(author_fname, author_lname);`
+
+    - NOTE: in this case the concat will not generate a blank space between author's first name and last name. To do so: `CONCAT(author_fname, ' ', author_lname);` 
+    - OR `CONCAT_WS(' ', author_fname, author_lname);`
+    - `CONCAT_WS(segment, colA, colB, colC)` represents CONCAT WITH SEGMENT;
+
+  - Another way we can do is:
+
+    ```
+    SELECT
+      CONCAT(author_fname, ' ', author_lname)
+      AS 'full name'
+    FROM books;
+    ```
+
+    or
+
+    ```
+    SELECT author_fname AS first, author_lname AS last, 
+      CONCAT(author_fname, ', ', author_lname) AS full
+    FROM books;
+    ```
+
+### SUBSTRING
+
+Before we use `SUBSTRING`, we have to make sure it is in the `SELECT ... ` clause, since the sql needs to know which table we are working at. 
+
+- `SELECT SUBSTRING('hello world', 1, 5);` will return **hello**, <u>since the index system in sql begins at 1, not 0!</u> 
+- `SELECT SUBSTRING('hello world', 7)` will return the character starting from the index 6 till the end. In this case it will return **world**
+- `SELECT SUBSTRING('hello world', -5)`will return the string starting from the last but 7th index till the end. In this case it will return **world**. 
+  - `SELECT SUBSTRING('hello world', -2)` will return **ld**. 
+
+We can also use `SUBSTR` as a shortcut for `SUBSTRING`. They do the same thing. 
+
+### REPLACE
+
+- `SELECT REPLACE(string, str_to_be_replaced, str_to_replaced);`
+
+- ` SELECT REPLACE('HELLO WORLD', 'HELL', '1234');` will return **all** 'HELL' in the string to '1234'. In our case, it will return 1234O WORLD. 
+- This function is **case-sensitive**: `SELECT REPLACE('Hello WOrld', 'o', '7');` will return HELL7 WOrld.  
+
+### REVERSE
+
+- `SELECT REVERSE('Hello World')` will return 'dlroW olleH'. 
+
+### CHAR_LENGTH
+
+Return the length of the given string.
+
+- `SELECT CHAR_LENGTH('HELLO WORLD');` will return 11.
+
+  - e.g. `SELECT author_lname, CHAR_LENGTH(author_lname) AS 'length' FROM books;`
+
+  - `SELECT CONCAT(author_lname, ' is ', CHAR_LENGTH(author_lname), ' characters long') FROM books;`
+
+### UPPER() and LOWER()
+
+Change A String's Case
+
+- `SELECT UPPER('Hello World');`will return HELLO WORLD
+- `SELECT LOWER('Hello World');`will return hello world
+- `SELECT CONCAT ('MY FAVORITE BOOK IS ', UPPER(title)) FROM books;`
+
+
+
+
+
+
 
