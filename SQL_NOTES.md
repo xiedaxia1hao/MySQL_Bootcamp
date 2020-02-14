@@ -292,6 +292,102 @@ Change A String's Case
 - `SELECT LOWER('Hello World');`will return hello world
 - `SELECT CONCAT ('MY FAVORITE BOOK IS ', UPPER(title)) FROM books;`
 
+### DISTINCT
+
+Remove the duplicate
+
+- `SELECT DISTINCT author_lname FROM books;`
+
+What if we want to distinct multiple entries? There are two ways:
+
+- `SELECT DISTINCT CONCAT(author_fname, ' ', author_lname) FROM books;`
+- `SELECT DISTINCT author_fname, author_lname FROM books; `
+
+### ORDER BY
+
+**By default, it is sorted in ascending order. If we want, we can also add `ASC` in the end. ** 
+
+- `SELECT author_lname FROM books ORDER BY author_lname;`
+- or `SELECT author_lname FROM books ORDER BY author_lname ASC;`
+
+**If we want to sort it in descending order, add `DESC` in the end.**
+
+- `SELECT author_lname FROM books ORDER BY author_lname DESC;`
+
+There is also a short cut: 
+
+- `SELECT title, author_fname, author_lname FROM books ORDER BY 2;`
+
+  In this case, the 2 means the second argument in the statement, which is author_fname. 
+
+If we need to sort different different columns:
+
+- `SELECT title, author_fname, author_lname FROM books ORDER BY author_lname, author_fname;`
+
+  In this case, we will sort the author_lname in ascending order first, then sort the author_fname in ascending order as well. 
+
+### LIMIT
+
+**Get the top K entries we needed! LIMIT comes last! ** 
+
+- `SELECT title, released_year FROM books ORDER BY released_year LIMIT 10;`
+
+  Get the top 10 latest released books from our database.
+
+Another way to get the result:
+
+- `SELECT title, released_year FROM books ORDER BY released_year LIMIT 0, 10;`
+
+  0,10 represents that we start from the 1st elements (startpoint) and want to go for 10 rows (how many steps we take).
+
+  **Here it is confusing since the first row in this statement is 0 instead of 1 in the string.** 
+
+- If we want to go from the 5th entries, and go for the all rows in the table:
+
+  - `SELECT title, released_year FROM books ORDER BY released_year LIMIT 4, 1385271589275983;`
+  - 1385271589275983 just a random gigantic number that we know we will never reach
+
+- Hence, `SELECT title, released_year FROM books ORDER BY released_year LIMIT 4, 100;` is also acceptable if our entries are less than 100 rows.
+
+### LIKE
+
+###### Better Search, wildcard
+
+- `SELECT author_fname FROM books WHERE title LIKE '%da%';`
+  - Here the % can represents anything (widecard), and can also contains zero characters
+  - In this case, we are searching for author's first name which contains letters da in any places.
+- If we change the code to: `SELECT author_fname FROM books WHERE title LIKE 'da%';`
+  - We are trying to find author's first name which begins with letters da. 
+- If we change the code to: `SELECT author_fname FROM books WHERE title LIKE '%da';`
+  - We are trying to find author's first name which ends with letters da. 
+- If we change the code to: `SELECT author_fname FROM books WHERE title LIKE 'da';`
+  - <u>We are trying to find author's first name which is exactly the same as da.</u> 
+- **NOTE: the LIKE statement is CASE-INSENSITIVE.** 
+
+
+
+**Another type of wildcar: '' where we have 4 underscores. Each underscore represents exactly one entity.** 
+
+- `SELECT title, stock_quantity FROM books WHERE stock_quantity LIKE '____'; `
+  - This statement will give us the titles and stock quantities of books whose stock_quantity has exactly four digits. 
+
+
+
+If we want to match a US phone number, for example (235) 234-0987, we can use `LIKE '(___)___-____';`
+
+
+
+**What if we want to find an item which contains % or _ ?**
+
+- We can use excape symbol: `WHERE title LIKE '%\%%'`, <u>we use a backslash to escape the %.</u>
+- Or  `WHERE title LIKE '%\_%'`, <u>we use a backslash to escape _.</u> 
+
+
+
+
+
+
+
 
 
 
