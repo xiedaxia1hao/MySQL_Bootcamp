@@ -12,8 +12,86 @@ Onwards!
 
 ### Common-used Data Type
 
-- INT: 
-- VARCHAR (between 1 and 255 characters): e.g. ``varchar(100)``, ``varchar(254)``
+- `INT`: While numbers
+
+- `DECIMAL`: requires two parameters, e.g. `DECIMAL(total_number_of_digits, digits_after_decimal)`
+
+  - e.g. `DECIMAL(5,2)` -> 999.99 (5 digits long, 2 digits after decimal)
+    - If in this case, we insert a value larger than 999.99, for examle, 2135987129857, then in the table it will store as 999.99, since 999.99 is the largest number the table can store.
+    - If we insert 1.9999, then we will return 2.00. Since when we only allow two digits after decimal, it will automatically round up. 
+  - total_number_of_digits ranges from 1-65, and digits_after_decimal range from 0-30
+
+- `FLOAT` and `DOUBLE`: store larger numbers using less space -> comes at the csot of precision
+
+  - `FLOAT`: 4 Bytes, ~7 digits precision
+  - `DOUBLE`: 8 Bytes, ~15 digits precision
+  - **Which do I use? : Always try to use `DECIMAL` unless we know precision doesn't matter, and `DOUBLE` will guarantee more precision**
+  - `DECIMAL` vs. `FLOAT` and `DOUBLE`
+    - `DECIMAL`: <u>fixed-point type</u> and calculations are <u>exact</u>
+    - `FLOAT` and `DOUBLE`: <u>floating-point type</u> and calculations are <u>approximate</u>. 
+
+- `VARCHAR` (between 1 and 255 characters): e.g. ``varchar(100)``, ``varchar(254)``
+
+- `CHAR`: has a fixed length, and the length can be any value from 0 to 255. e.g. `CHAR(5)`, which means only 5 characters allowed. If exceeds 5 chars, it will truncate. If it's less than 5 chars, it will add up to 5 chars. **Always occupy the same space.** 
+
+  - Note: When CHAR values are retrieved, trailing spaces are removed unless the PAD_CHAR_TO_FULL_LENGTH SQL mode is enabled. 
+  - CHAR is faster for fixed length text. e.g. State Abbr: CA, NY; Sex: M/F
+
+- `DATE`: stores data without time. **'YYYY-MM-DD' Format**.
+
+- `TIME`: stores time but no date. **'HH:MM:SS' Format**
+
+- `DATETIME`: stores a date AND time. **'YYYY-MM-DD HH:MM:SS' Format**
+
+  ```mysql
+  INSERT INTO people (name, birthdate, birthtime, birthdt)
+  VALUES('Padma', '1983-11-11', '10:07:35', '1983-11-11 10:07:35');
+  ```
+
+- `CURDATE()`: gives current date. e.g. `SELECT CURDATE();`
+
+- `CURTIME()`: gives current time. e.g. `SELECT CURTIME();`
+
+- `NOW()`: gives current datetime. e.g. `SELECT NOW();`
+
+- Formatting Dates:
+
+  - **DATE_FORMAT() is more common**
+
+  ```mysql
+  SELECT name, birthdate ,DAY(birthdate), DAYNAME(birthdate), DAYOFYEAR(birthtime) FROM people;
+  
+  SELECT name, birthdate ,MONTH(birthdate), MONTHNAME(birthdate) FROM people;
+  
+  SELECT name, birthtime, MINUTE(birthtime) FROM people;
+  
+  SELECT DATE_FORMAT('2009-10-04 22:23:00', '%W %M %Y');
+  -> 'Sunday October 2009'
+  SELECT DATE_FORMAT('2009-10-04 22:23:00', '%W-%M-%Y');
+  -> 'Sunday-October-2009'
+  ```
+
+- **DATEMATH**:
+
+  ```mysql
+  SELECT DATEDIFF('2007-12-31 23:59:59', '2007-12-30');
+  -> 1
+  
+  SELECT DATE_ADD('2007-12-31 23:59:59', INTERVAL 1 DAY);
+  
+  SELECT '2007-12-31 23:59:59' + INTERVAL 2 DAY;
+  ```
+
+- **TIMESTAMPS**: add a timestamps on the table 
+
+  ```
+  What's the difference between DATETIME and TIMESTAMP?
+  ------
+  They both store datetime information, but there's a difference in the range, 
+  TIMESTAMP has a smaller range. TIMESTAMP also takes up less space. 
+  TIMESTAMP is used for things like meta-data about when something is created
+  or updated.
+  ```
 
 ### Initialize SQL server
 
