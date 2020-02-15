@@ -8,8 +8,6 @@ Onwards!
 
 
 
-
-
 # SQL NOTES
 
 ### Common-used Data Type
@@ -383,6 +381,94 @@ If we want to match a US phone number, for example (235) 234-0987, we can use `L
 - Or  `WHERE title LIKE '%\_%'`, <u>we use a backslash to escape _.</u> 
 
 
+
+## Aggregation Function
+
+### Count
+
+- How many things are in the table: `SELECT COUNT(*) FROM books;` 
+- How many author's first name are in the table: `SELECT COUNT(DISTINCT author_fname) FROM books;` 
+  - Because we need to know the exact distinct number of author's name. 
+- How many distinct author's are in the table: `SELECT COUNT(DISTINCT author_fname, author_lname) FROM books; `
+- How many titles contain "the": `SELECT COUNT(*) FROM books WHERE title LIKE '%the%';`
+
+### GROUP BY
+
+`GROUP BY` summarizes or aggregates identical data into single rows 
+
+It will return the super row that visually only contains one element each row. But inside each row, we will have several seperate rows. 
+
+- `SELECT author_fname, author_lname, COUNT(*) FROM books GROUP BY author_lname, author_fname;`
+  - it will give us how many  books each author has written
+
+### MIN and MAX
+
+- `SELECT MIN(released_year) FROM books` will return us the earliest year the book was released
+- `SELECT MAX(pages) FROM books` will return the highest pages of book
+
+**If we want to find the title of the longest books:** 
+
+- If we try to use `SELECT MAX(pages), title FROM books` will not return the right answer.
+
+  - **WHY?** 
+    - This statement first finds the max pages in the pages column, and then find the first element in title pages -> simply combine them **(NOT CORRECT!)**
+
+- Also, if we try to use `SELECT title, pages FROM books WHERE pages = MAX(pages);` won't work either. 
+
+  - The reason for this problem actually lies in the behavior of how `WHERE` works in MySQL. The condition specified in the WHERE clause is checked for every row and finally the selected rows are aggreagated. Hence, for MySQL to be able to understand the condition `pages = MAX(pages)`, the value of MAX(pages) should already be known. This cretes a circular reference if an aggregate function is used inside the WHERE clause. 
+  - To make it correct, use `SELECT title, pages FROM books WHERE pages = (SELECT MAX(pages) FROM books);`
+    - This statement needs to run two quiries, which is slow.
+    
+    - How to make it faster? 
+    
+    - **`SELECT * FROM books ORDER BY pages DESC LIMIT 1;` will provide us with the result faster.** 
+    
+      
+
+- If we want to find the year each author published their first book, we can use:
+
+  ```mysql
+  SELECT author_fname, author_lname, MIN(released_year)
+  FROM books
+  GROUP BY author_lname,author_fname;
+  
+  -- This statement will first group the author_lname and author_fname to a superrow. Then based on each superrow, we find the min released_year. 
+  ```
+
+  or we can also use:
+
+  `SELECT author_fname, author_lname, released_year FROM books GROUP BY autho
+  r_fname, author_lname ORDER BY released_year;`
+
+
+
+### SUM
+
+- Sum all the pages in the database: `SELECT SUM(pages) FROM books;`
+
+**SUM with GROUP BY:**
+
+- Sum all pages each author has written: `SELECT author_fname, author_lname, SUM(pages) FROM books GROUP BY author_fname, author_lname;`
+
+### AVG
+
+- Find the average pages of all books: ` SELECT AVG(pages) FROM books;`
+
+
+**AVG with GROUP BY:**
+
+- Find the average pages each author has written: `SELECT author_fname, author_lname, AVG(pages) FROM books GROUP BY author_fname, author_lname;`
+- Calculate the average stock quantity for books released in the same year: `SELECT released-year, AVG(stock_quantity) FROM books GROUP BY released_year; `
+
+
+
+
+
+
+
+  
+
+  
 
 
 
