@@ -540,7 +540,70 @@ It will return the super row that visually only contains one element each row. B
 
 
 
+## Logical Operators
 
+- Not Equal: `!=` 
+
+- Not Like: `NOT LIKE`
+
+- Greater Than: `>` 
+
+- Great Than or Equal to: `>=`
+
+  - `SELECT 99 > 1;`
+
+    - It will return 1, which means TRUE
+    - If it is FALSE, it will return 0;
+    - `SELECT 'a' = 'A';` will return TRUE. Since in SQL, it treats 'a' and 'A' the same element
+  
+- Logical AND: `&&` or `AND`
+
+- Logical OR: `||` or `OR`
+
+- BETWEEN (inclusive): `Between x AND y;` (We can not replace the AND by && in this case. Between and AND are paired together)
+
+  - e.g. `SELECT title, released_year FROM books WHERE released_year BETWEEN 2004 AND 2015;` -> return us with books whose 2004 <= released_year <= 2015 
+
+- NOT Between: 
+
+  - e.g. `SELECT title, released_year FROM books WHERE released_year NOT BETWEEN 2004 AND 2015;` -> return us with books whose released_year < 2004 or  released_year > 2015
+
+  - If we want to compare the date, we have to use `CAST()` to make sure that they are in the same data type. Otherwise, it will cause problems. 
+    - How to use `CAST()`?
+      - `SELECT CAST('1993-11-5' AS DATETIME);` will return us '1993-11-5 00:00:00'
+  - IN and NOT IN: `IN`. `NOT IN` is just the opposite of `IN`
+
+  ```mysql
+  SELECT title, author_lname FROM books
+  WHERE author_lname = 'Carver' OR
+  			author_lname = 'Lahiri' OR 
+  			author_lname = 'Smith';
+  			
+  # It is the same as: 
+  
+  SELECT title, author_lname FROM books
+  WHERE author_lname IN ('Carver', 'Lahiri', 'Smith');
+  # (This version is much shorter!)
+  
+  SELECT title, released-year FROM books
+  WHERE released_year NOT IN
+  (2000, 2002, 2004, 2006, 2010, 2012, 2014, 2016);
+  ```
+
+-  CASE statement: `CASE`
+
+  ```mysql
+  SELECT title, released_year, 
+  	CASE
+  		WHEN released_year >= 2000 THEN 'Modern Lit'
+  		ELSE '20th Century Lit'
+  	END AS GRENRE
+  FROM books;
+  ```
+
+  
+
+​     
 
 
 
