@@ -601,11 +601,112 @@ It will return the super row that visually only contains one element each row. B
   FROM books;
   ```
 
+
+
+## Relationship Basics
+
+### One To Many
+
+For example, each book has many reviews. 
+
+
+
+- **Define Foreign Key**: 
+
+  ```mysql
+  CREATE TABLE orders(
+  	...
+  	customer_id INT,
+  	FOREIGN KEY (customer_id) REFERENCES customers(id)
+    # The cusomers here represents the other table and the id indicates the primary key of the customers table
+  
+  );
+  ```
+
+
+
+### JOINS
+
+- **Cross Join**: simply multiply every row in the second table to the each row in the first table (basically meaningless): 
+
+  - `SELECT * FROM cusomers, orders;`
+
+- **Inner Join**: 
+
+  ```mysql
+  -- Implicit Inner Join
+  SELECT first_name, last_name, order_date, amount FROM customers, orders
+  WHERE customers.id = orders.customer_id;
+  # add table names before the column we want to mention
+  # to reduce the ambiguity
+  
+  -- Explicit Inner Join
+  SELECT first_name, last_name, order_date, amount FROM customers
+  INNER JOIN orders
+  	ON customers.id = orders.customer_id; 
+  	
+  # 1. The order of the table matters! The table which comes first will appear on the left part of the joined table 
+  # 2. We don't necessary need to write INNER JOIN as our keywords. Simply write JOIN will provide with with the correct result. 
+  ```
+
+  <img src="SQL_NOTES.assets/image-20200217100547900.png" alt="image-20200217100547900" style="zoom:25%;" />
+
+- **Left Join**: 
+
+  ```mysql
+  SELECT * FROM customers
+  LEFT JOIN orders
+  	ON customers.id = orders.customer_id;
+  	
+  # We take everything from customers, and then match orders into customers. For some customers who don't have any orders, we will just put null. 
+  
+  # To avoid the null, we can use:
+  
+  SELECT
+  	first_name,
+  	last_name,
+  	IFNULL(SUM(amount), 0) AS total_spent
+  FROM customers
+  LEFT JOIN orders
+  	ON customers.id = orders.customer_id
+  GROUP BY customers.id
+  ORDER BY total_spent; 
+  ```
+
   
 
-​     
+  <img src="SQL_NOTES.assets/image-20200217101601034.png" alt="image-20200217101601034" style="zoom: 25%;" />
 
+- **Right Join**:
 
+  ```mysql
+  SELECT * FROM customers
+  RIGHT JOIN orders
+  	ON customers.id = orders.customers_id
+  ```
+
+  
+
+  <img src="SQL_NOTES.assets/image-20200217102837675.png" alt="image-20200217102837675" style="zoom:25%;" />
+
+- **ON DELETE CASCADE**
+
+  - If we want to delete a record in the user, however there are still some orders associate with this user. We cannot simply delete the user since MySQL will throw an error. 
+
+  - Thus, in order to delete the item who has something associate with it, we need to use **ON DELETE CASCADE**
+
+    ```mysql
+    CREATE TABLE orders(
+    	...
+    	customer_id INT,
+    	FOREIGN KEY (customer_id) 
+      	REFERENCES customers(id)
+      	ON DELETE CASCADE
+      # When a customer is deleted, then orders associate with this user will also be deleted. 
+    );
+    ```
+
+    
 
   
 
